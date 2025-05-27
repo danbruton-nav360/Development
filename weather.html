@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Nacogdoches Hourly Forecast</title>
+</head>
+<body>
+    <h1>Nacogdoches Hourly Temperature Forecast</h1>
+    <div id="forecast"></div>
+
+    <script>
+        async function getWeather() {
+            const apiKey = '740922ed842a3989f44b172b1a08d1af'; // Replace with your OpenWeather API key
+            const lat = 31.6035;
+            const lon = -94.6555;
+
+            const response = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=imperial&appid=${apiKey}`);
+            const data = await response.json();
+            const forecastDiv = document.getElementById('forecast');
+            let content = '<ul>';
+
+            data.list.slice(0, 12).forEach(item => {
+                const date = new Date(item.dt * 1000);
+                const hours = date.getHours();
+                const ampm = hours >= 12 ? 'PM' : 'AM';
+                const formattedHours = hours % 12 || 12;
+                const temp = item.main.temp.toFixed(1);
+                content += `<li>${formattedHours} ${ampm}: ${temp}°F</li>`;
+            });
+
+            content += '</ul>';
+            forecastDiv.innerHTML = content;
+        }
+
+        getWeather().catch(error => console.error('Error fetching the weather data:', error));
+    </script>
+</body>
+</html>
